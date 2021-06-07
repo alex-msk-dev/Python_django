@@ -1,0 +1,17 @@
+<h1>Личный кабинет</h1>
+<h2>{{ user.first_name }} {{ user.last_name }}</h2>
+
+<table>
+  <tr>
+    <th>Ссылка</th>
+    <th>Сокращенная ссылка</th>
+    <th>Количество переходов</th>
+  </tr>
+  {% for url in urls %}
+    <tr>
+      <td>{{ url.url }}</td>
+      <td>{{ url.get_absolute_url }}</td>
+      <td>{{ url.click_counter }}</td>
+    </tr>
+  {% endfor %}
+</table>

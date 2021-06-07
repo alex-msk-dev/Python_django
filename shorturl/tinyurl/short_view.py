@@ -11,7 +11,8 @@ def short_url(request: HttpRequest):
     if not url_form.is_valid():
         return HttpResponseBadRequest()
     url = url_form.cleaned_data['url']
-    key = shorts.to_key(url)
+    user = request.user if request.user.is_authenticated else None
+    key = shorts.to_key(url, user)
     host = request.get_host()
     schema = request.scheme
 

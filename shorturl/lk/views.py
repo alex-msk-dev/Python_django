@@ -1,17 +1,28 @@
-from django.shortcuts import render
-from .forms import AuthForm
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.contrib.auth import  authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 
-def auth(request: HttpRequest):
-    go_next = request.GET.get('redirect', '/')
-    if request.user .is_authenticated:
-        return HttpResponseRedirect(go_next)
-    auth_form = AuthForm(request.POST)
-    if not auth_form.is_valid():
-        return HttpResponseBadRequest
-    user = authenticate(request, auth_form.cleaned_data)
-    if user:
-        login(request, user)
-        return HttpResponseRedirect(go_next)
-    return HttpResponseNoAllowed()
+from tinyurl.models import ShortUrlModel
+from .forms import RegistrationForm
+from django.contrib.auth import login
+
+
+def sign_up(request):
+    context = {}
+    form = RegistrationForm(request.POST or None)
+    if request.method == "POST":
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('index')
+    context['form'] = form
+    return render(request, 'registration/sign_up.html', context)
+
+
+@login_required
+def lk(request):
+    urls = ShortUrlModel.objects.filter(user=request.user)
+    context = {
+        'user': request.user,
+        'urls': urls,
+    }
+    return render(request, 'lk.html', context)

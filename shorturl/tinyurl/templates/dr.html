@@ -3,7 +3,14 @@
   <title>Укорачиватель ссылок</title>
   </head>
   <body>
-  {% include 'user.html' %}
+{#  {% include 'user.html' %}#}
+{% if user.is_authenticated %}
+  <p> Привет <a href="{% url 'lk' %}">{{ user }}</a></p>
+  <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit">Выход</button></form>
+{% else %}
+  <a href="{% url 'login' %}">Вход</a>
+  <a href="{% url 'sign-up' %}">Регистрация</a>
+{% endif %}
   <h1>Сократите свой URL</h1>
 <form action="/s/" method="post">
     {% csrf_token %}
